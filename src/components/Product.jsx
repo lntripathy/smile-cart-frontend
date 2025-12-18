@@ -38,7 +38,7 @@ const Product = () => {
   }
 
   return (
-    <div className="px-6 pb-6">
+    <div className="px-10 pb-6">
       <div>
         <Typography className="py-2" style="h2" weight="semibold">
           {name}

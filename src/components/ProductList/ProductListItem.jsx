@@ -1,7 +1,8 @@
 import { Typography } from "neetoui";
 import { Link } from "react-router-dom";
 import routes from "routes";
-import { buildUrl } from "utils/url";
+
+import { buildUrl } from "../utils/url";
 
 const ProductListItem = ({ imageUrl, name, offerPrice, slug }) => (
   <Link

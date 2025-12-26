@@ -13,7 +13,7 @@ const useCartItemsStore = create(
             return { cartItems: dissoc(slug, cartItems) };
           }
 
-          return { cartItems: assoc(slug, String(quantity), cartItems) };
+          return { cartItems: assoc(slug, Number(quantity), cartItems) };
         }),
       removeCartItem: slug => set(evolve({ cartItems: dissoc(slug) })),
     }),

@@ -1,26 +1,30 @@
 import { useEffect, useState, useRef } from "react";
 
 import classNames from "classnames";
+import { useShowProduct } from "hooks/reactQuery/useProductsApi";
 import { Left, Right } from "neetoicons";
 import { Button } from "neetoui";
+import { append } from "ramda";
+import { useParams } from "react-router-dom";
 
-const Carousel = ({ imageUrls, title }) => {
+const Carousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const { slug } = useParams();
   const timerRef = useRef(null);
 
-  // const handleNext = () => {
-  //     const nextIndex = (currentIndex + 1) % imageUrls.length;
-  //     setCurrentIndex(nextIndex);
-  // };
+  const { data: { imageUrl, imageUrls: partialImageUrls, title } = {} } =
+    useShowProduct(slug);
 
-  // const handlePrevious = () => {
-  //     const previousIndex =
-  //         (currentIndex - 1 + imageUrls.length) % imageUrls.length;
-  //     setCurrentIndex(previousIndex);
-  // };
+  const imageUrls = append(imageUrl, partialImageUrls);
 
   const handleNext = () => {
     setCurrentIndex(prevIndex => (prevIndex + 1) % imageUrls.length);
+  };
+
+  // TO RESET THE TIMER
+  const resetTimer = () => {
+    clearInterval(timerRef.current);
+    timerRef.current = setInterval(handleNext, 3000);
   };
 
   const handlePrevious = () => {
@@ -30,23 +34,11 @@ const Carousel = ({ imageUrls, title }) => {
     resetTimer();
   };
 
-  // useEffect(() => {
-  //   const interval = setInterval(handleNext, 3000);
-
-  //   return () => clearInterval(interval);
-  // }, []);
-
   useEffect(() => {
     timerRef.current = setInterval(handleNext, 3000);
 
     return () => clearInterval(timerRef.current);
   }, []);
-
-  // TO RESET THE TIMER
-  const resetTimer = () => {
-    clearInterval(timerRef.current);
-    timerRef.current = setInterval(handleNext, 3000);
-  };
 
   return (
     <div className="flex flex-col items-center">

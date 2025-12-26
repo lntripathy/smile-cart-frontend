@@ -1,38 +1,46 @@
 import { useRef } from "react";
 
 import { TooltipWrapper } from "components/commons";
-import { VALID_COUNT_REGEX } from "components/constansts";
 import useSelectedQuantity from "components/hooks/useSelectedQuantity";
-// import { paths } from "ramda";
-// import useCartItemsStore from "stores/useCartItemsStore";
-// import { shallow } from "zustand/shallow";
-import { Input, Toastr, Button } from "neetoui";
+import { useShowProduct } from "hooks/reactQuery/useProductsApi";
+import { Toastr, Input, Button } from "neetoui";
+import { useTranslation } from "react-i18next";
 
-const ProductQuantity = ({ slug, availableQuantity }) => {
-  const countInputFocus = useRef(null);
+import { VALID_COUNT_REGEX } from "../constansts";
+
+const ProductQuantity = ({ slug }) => {
+  const { t } = useTranslation();
+
   const { selectedQuantity, setSelectedQuantity } = useSelectedQuantity(slug);
 
+  const countInputFocus = useRef(null);
+
+  const { data: product = {} } = useShowProduct(slug);
+
+  const { availableQuantity } = product;
   const parsedSelectedQuantity = parseInt(selectedQuantity) || 0;
   const isNotValidQuantity = parsedSelectedQuantity >= availableQuantity;
-
-  const preventNavigation = e => {
-    e.stopPropagation();
-    e.preventDefault();
-  };
 
   const handleSetCount = event => {
     const { value } = event.target;
     const isNotValidInputQuantity = parseInt(value) > availableQuantity;
 
     if (isNotValidInputQuantity) {
-      Toastr.error(`Only ${availableQuantity} units are available`, {
-        autoClose: 2000,
+      const errorMessage = t("error.quantityLimit", {
+        count: availableQuantity,
       });
+
+      Toastr.error(errorMessage, { autoClose: 2000 });
       setSelectedQuantity(availableQuantity);
       countInputFocus.current.blur();
     } else if (VALID_COUNT_REGEX.test(value)) {
       setSelectedQuantity(value);
     }
+  };
+
+  const preventNavigation = e => {
+    e.stopPropagation();
+    e.preventDefault();
   };
 
   return (
@@ -55,10 +63,8 @@ const ProductQuantity = ({ slug, availableQuantity }) => {
         onChange={handleSetCount}
         onClick={preventNavigation}
       />
-      {/* {selectedQuantity} */}
-
       <TooltipWrapper
-        content="Reached maximum units"
+        content={t("reachedMaximumUnits")}
         position="top"
         showTooltip={isNotValidQuantity}
       >

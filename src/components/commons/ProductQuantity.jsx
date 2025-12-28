@@ -6,7 +6,7 @@ import { useShowProduct } from "hooks/reactQuery/useProductsApi";
 import { Toastr, Input, Button } from "neetoui";
 import { useTranslation } from "react-i18next";
 
-import { VALID_COUNT_REGEX } from "../constansts";
+import { VALID_COUNT_REGEX } from "../constants";
 
 const ProductQuantity = ({ slug }) => {
   const { t } = useTranslation();

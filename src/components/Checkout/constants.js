@@ -1,18 +1,6 @@
 import { t } from "i18next";
 import * as yup from "yup";
 
-export const CHECKOUT_FORM_INITIAL_VALUES = {
-  email: "",
-  country: { code: "US", name: "United States" },
-  firstName: "",
-  lastName: "",
-  address: "",
-  apartment: "",
-  city: "",
-  state: null,
-  zipCode: "",
-};
-
 export const CHECKOUT_FORM_VALIDATION_SCHEMA = yup.object().shape({
   email: yup
     .string()
@@ -40,3 +28,17 @@ export const CHECKOUT_FORM_VALIDATION_SCHEMA = yup.object().shape({
     .required(t("validations.stateRequired")),
   zipCode: yup.number().required(t("validations.zipCodeRequired")),
 });
+
+export const CHECKOUT_FORM_INITIAL_VALUES = {
+  email: "",
+  country: { code: "US", name: "United States" },
+  firstName: "",
+  lastName: "",
+  address: "",
+  apartment: "",
+  city: "",
+  state: null,
+  zipCode: "",
+};
+
+export const CHECKOUT_LOCAL_STORAGE_KEY = "checkoutUserDetails";

@@ -1,3 +1,5 @@
+import React from "react";
+
 import { useFormikContext } from "formik";
 import {
   useFetchStates,
@@ -16,7 +18,9 @@ const Form = () => {
   } = useFormikContext();
 
   const { data: countries = [] } = useFetchCountries();
-  const { data: states = [] } = useFetchStates();
+  const { data: states = [] } = useFetchStates({
+    countryCode: country.code,
+  });
 
   const handleChangeCountry = country => {
     setFieldValue("country", country);
@@ -27,6 +31,16 @@ const Form = () => {
     <>
       <Typography style="h3" weight="semibold">
         {t("contact")}
+      </Typography>
+      <Input
+        required
+        label={t("email")}
+        name="email"
+        placeholder={t("enterYourEmail")}
+        size="large"
+      />
+      <Typography className="pt-5" style="h3" weight="semibold">
+        {t("shippingAddress")}
       </Typography>
       <Select
         required
@@ -39,31 +53,12 @@ const Form = () => {
         value={country}
         onChange={handleChangeCountry}
       />
-      <Input
-        required
-        label={t("email")}
-        name="email"
-        placeholder={t("enterYourEmail")}
-        size="large"
-      />
-      <Typography className="pt-5" style="h3" weight="semibold">
-        {t("shippingAddress")}
-      </Typography>
       <div className="flex space-x-2">
         <Input
           required
           label={t("firstName")}
           name="firstName"
           placeholder={t("enterFirstName")}
-          size="large"
-        />
-        <Select
-          required
-          label={t("state")}
-          name="state"
-          optionRemapping={{ label: "name", value: "code" }}
-          options={states}
-          placeholder={t("selectState")}
           size="large"
         />
         <Input
@@ -94,6 +89,15 @@ const Form = () => {
           label={t("city")}
           name="city"
           placeholder={t("enterCity")}
+          size="large"
+        />
+        <Select
+          required
+          label={t("state")}
+          name="state"
+          optionRemapping={{ label: "name", value: "code" }}
+          options={states}
+          placeholder={t("selectState")}
           size="large"
         />
         <Input

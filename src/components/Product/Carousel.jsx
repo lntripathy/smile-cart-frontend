@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 
 import classNames from "classnames";
 import { useShowProduct } from "hooks/reactQuery/useProductsApi";
@@ -15,17 +15,16 @@ const Carousel = () => {
   const { data: { imageUrl, imageUrls: partialImageUrls, title } = {} } =
     useShowProduct(slug);
 
-  const imageUrls = append(imageUrl, partialImageUrls);
+  const imageUrls = append(imageUrl, partialImageUrls || []);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     setCurrentIndex(prevIndex => (prevIndex + 1) % imageUrls.length);
-  };
+  }, [imageUrls.length]);
 
-  // TO RESET THE TIMER
-  const resetTimer = () => {
+  const resetTimer = useCallback(() => {
     clearInterval(timerRef.current);
     timerRef.current = setInterval(handleNext, 3000);
-  };
+  }, [handleNext]);
 
   const handlePrevious = () => {
     setCurrentIndex(
@@ -35,14 +34,19 @@ const Carousel = () => {
   };
 
   useEffect(() => {
+    if (imageUrls.length === 0) {
+      return undefined;
+    }
+
     timerRef.current = setInterval(handleNext, 3000);
 
-    return () => clearInterval(timerRef.current);
-  }, []);
+    return () => {
+      clearInterval(timerRef.current);
+    };
+  }, [imageUrls.length, handleNext]);
 
   return (
     <div className="flex flex-col items-center">
-      {/* Image + arrows */}
       <div className="flex items-center">
         <Button
           className="shrink-0 focus-within:ring-0 hover:bg-transparent"
@@ -65,7 +69,6 @@ const Carousel = () => {
           }}
         />
       </div>
-      {/* Dots */}
       <div className="mt-2 flex items-center justify-center space-x-1">
         {imageUrls.map((_, index) => (
           <span
